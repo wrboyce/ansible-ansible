@@ -1,0 +1,12 @@
+---
+- name: ensure ansible is installed
+  apt: pkg=ansible state=installed
+
+- name: create ansible user
+  user: name=ansible system=yes
+
+- name: copy authorized_keys
+  authorized_key: user=ansible key="{{ ansible_deploy_key }}"
+
+- name: configure sudo access
+  lineinfile: dest=/etc/sudoers state=present regexp='^ansible ALL' line='ansible ALL=(ALL) NOPASSWD:ALL' validate='visudo -cf %s'
